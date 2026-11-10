@@ -9,7 +9,7 @@ export async function GET() {
       where: { isActive: true },
       select: {
         id: true, email: true, realName: true, nickname: true,
-        avatar: true, phone: true, handles: true, role: true,
+        avatar: true, phone: true, birthday: true, handles: true, role: true,
         createdAt: true,
       },
       orderBy: { realName: "asc" },

@@ -15,6 +15,7 @@ interface Result {
 
 const typeColors: Record<string, "default" | "secondary" | "success" | "warning"> = {
   member: "default",
+  friend: "secondary",
   news: "success",
   forum: "warning",
 };
