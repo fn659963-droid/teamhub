@@ -158,7 +158,7 @@ export default function SharedAccountsPage() {
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-slate-800">Shared Accounts</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Shared Accounts</h1>
         <Button size="sm" onClick={() => setShowCreate(true)}>
           <Plus className="h-4 w-4" /> Add Row
         </Button>

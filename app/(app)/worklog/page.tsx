@@ -99,15 +99,15 @@ export default function WorkLogPage() {
   const isToday = dateToISO(date) === dateToISO(new Date());
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-slate-800">Work Log</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Work Log</h1>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon" onClick={() => { const d = new Date(date); d.setDate(d.getDate() - 1); setDate(d); }}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <span className="text-sm font-medium text-slate-700 w-32 text-center">{formatDate(date)}</span>
+          <span className="text-sm font-semibold text-slate-700 w-32 text-center">{formatDate(date)}</span>
           <Button variant="outline" size="icon" disabled={isToday} onClick={() => { const d = new Date(date); d.setDate(d.getDate() + 1); setDate(d); }}>
             <ChevronRight className="h-4 w-4" />
           </Button>
@@ -118,15 +118,15 @@ export default function WorkLogPage() {
       </div>
 
       {/* Table */}
-      <div className="rounded-lg border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200">
-              <th className="text-left px-4 py-3 font-medium text-slate-600 w-36">Member</th>
-              <th className="text-left px-4 py-3 font-medium text-slate-600 w-24">Status</th>
-              <th className="text-left px-4 py-3 font-medium text-slate-600">Morning Plan</th>
-              <th className="text-left px-4 py-3 font-medium text-slate-600">What I Did</th>
-              <th className="text-left px-4 py-3 font-medium text-slate-600">Tomorrow&apos;s Plan</th>
+              <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-slate-500 w-36">Member</th>
+              <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-slate-500 w-28">Status</th>
+              <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-slate-500">Morning Plan</th>
+              <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-slate-500">What I Did</th>
+              <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-slate-500">Tomorrow&apos;s Plan</th>
               <th className="w-20"></th>
             </tr>
           </thead>
@@ -135,22 +135,22 @@ export default function WorkLogPage() {
               const log = getLog(u.id);
               const isMe = u.id === myId;
               return (
-                <tr key={u.id} className={isMe ? "bg-blue-50/50" : ""}>
-                  <td className="px-4 py-3 font-medium text-slate-800">
+                <tr key={u.id} className={isMe ? "bg-indigo-50/40" : "hover:bg-slate-50/60 transition-colors"}>
+                  <td className="px-5 py-4 font-medium text-slate-800">
                     {u.nickname ?? u.realName}
-                    {isMe && <span className="ml-1 text-xs text-slate-400">(you)</span>}
+                    {isMe && <span className="ml-1.5 text-xs text-indigo-400 font-normal">(you)</span>}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-4">
                     {log ? (
                       <Badge variant={statusVariant(log.status)}>{log.status}</Badge>
                     ) : (
                       <Badge variant="outline">—</Badge>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-slate-700 max-w-xs whitespace-pre-wrap">{log?.morningPlan ?? <span className="text-slate-300">—</span>}</td>
-                  <td className="px-4 py-3 text-slate-700 max-w-xs whitespace-pre-wrap">{log?.whatIDid ?? <span className="text-slate-300">—</span>}</td>
-                  <td className="px-4 py-3 text-slate-700 max-w-xs whitespace-pre-wrap">{log?.tomorrowPlan ?? <span className="text-slate-300">—</span>}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-4 text-slate-600 max-w-xs whitespace-pre-wrap text-sm">{log?.morningPlan ?? <span className="text-slate-300">—</span>}</td>
+                  <td className="px-5 py-4 text-slate-600 max-w-xs whitespace-pre-wrap text-sm">{log?.whatIDid ?? <span className="text-slate-300">—</span>}</td>
+                  <td className="px-5 py-4 text-slate-600 max-w-xs whitespace-pre-wrap text-sm">{log?.tomorrowPlan ?? <span className="text-slate-300">—</span>}</td>
+                  <td className="px-5 py-4">
                     <div className="flex items-center gap-1">
                       {isMe && isToday && (
                         <Button variant="ghost" size="sm" onClick={openEdit}>
@@ -159,7 +159,7 @@ export default function WorkLogPage() {
                       )}
                       {myRole === "ADMIN" && log && (
                         <button
-                          className="text-slate-400 hover:text-slate-700"
+                          className="text-slate-400 hover:text-indigo-600 transition-colors"
                           title="Add comment"
                           onClick={() => { setCommentTarget(log); setCommentText(""); }}
                         >

@@ -24,7 +24,7 @@ export default async function AdminPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-xl font-semibold text-slate-800">Admin Panel</h1>
+      <h1 className="text-2xl font-bold text-slate-900">Admin Panel</h1>
 
       <section className="space-y-3">
         <h2 className="text-base font-semibold text-slate-700">Member Management</h2>

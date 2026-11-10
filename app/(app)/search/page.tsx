@@ -37,7 +37,7 @@ export default function SearchPage() {
 
   return (
     <div className="max-w-2xl space-y-5">
-      <h1 className="text-xl font-semibold text-slate-800">Search</h1>
+      <h1 className="text-2xl font-bold text-slate-900">Search</h1>
 
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />

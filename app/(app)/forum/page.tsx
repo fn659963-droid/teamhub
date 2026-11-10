@@ -51,7 +51,7 @@ export default function ForumPage() {
   return (
     <div className="max-w-3xl space-y-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-slate-800">Forum</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Forum</h1>
         <Button size="sm" onClick={() => setShowCreate(true)}>
           <Plus className="h-4 w-4" /> New Topic
         </Button>

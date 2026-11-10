@@ -14,13 +14,13 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
   });
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen" style={{ background: "#f1f5f9" }}>
       <Sidebar
         unreadCount={unreadCount}
         userRole={user.role}
         userName={user.nickname ?? user.realName}
       />
-      <main className="ml-56 flex-1 min-w-0">
+      <main className="ml-60 flex-1 min-w-0">
         <div className="max-w-7xl mx-auto px-8 py-8">{children}</div>
       </main>
     </div>

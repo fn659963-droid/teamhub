@@ -3,25 +3,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
-  LayoutDashboard,
-  Users,
-  ClipboardList,
-  Share2,
-  Newspaper,
-  MessageSquare,
-  Settings,
-  Bell,
-  Search,
-  LogOut,
+  LayoutDashboard, Users, ClipboardList, Share2,
+  Newspaper, MessageSquare, Settings, Bell, Search, LogOut,
 } from "lucide-react";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/worklog", label: "Work Log", icon: ClipboardList },
-  { href: "/members", label: "Members", icon: Users },
-  { href: "/shared-accounts", label: "Shared Accounts", icon: Share2 },
-  { href: "/news", label: "News", icon: Newspaper },
-  { href: "/forum", label: "Forum", icon: MessageSquare },
+  { href: "/dashboard",       label: "Dashboard",       icon: LayoutDashboard },
+  { href: "/worklog",         label: "Work Log",         icon: ClipboardList },
+  { href: "/members",         label: "Members",          icon: Users },
+  { href: "/shared-accounts", label: "Shared Accounts",  icon: Share2 },
+  { href: "/news",            label: "News",             icon: Newspaper },
+  { href: "/forum",           label: "Forum",            icon: MessageSquare },
 ];
 
 interface SidebarProps {
@@ -30,86 +22,97 @@ interface SidebarProps {
   userName?: string;
 }
 
+function NavLink({ href, label, icon: Icon, active }: { href: string; label: string; icon: React.ElementType; active: boolean }) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
+        active
+          ? "bg-indigo-600 text-white shadow-sm"
+          : "text-indigo-200 hover:bg-indigo-800/60 hover:text-white"
+      )}
+    >
+      <Icon className={cn("h-4 w-4 shrink-0", active ? "text-white" : "text-indigo-400")} />
+      {label}
+    </Link>
+  );
+}
+
 export function Sidebar({ unreadCount = 0, userRole, userName }: SidebarProps) {
   const pathname = usePathname();
 
+  const initials = (name: string) =>
+    name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+
   return (
-    <aside className="fixed left-0 top-0 h-screen w-56 bg-slate-900 text-slate-100 flex flex-col z-40">
+    <aside className="fixed left-0 top-0 h-screen w-60 flex flex-col z-40" style={{ background: "#1e1b4b" }}>
       {/* Logo */}
-      <div className="px-5 py-4 border-b border-slate-700">
-        <span className="text-lg font-semibold tracking-tight">TeamHub</span>
+      <div className="px-5 py-5 border-b border-indigo-900/60">
+        <div className="flex items-center gap-2.5">
+          <div className="h-7 w-7 rounded-lg bg-indigo-500 flex items-center justify-center shrink-0">
+            <span className="text-white text-xs font-bold">T</span>
+          </div>
+          <span className="text-white text-base font-bold tracking-tight">TeamHub</span>
+        </div>
       </div>
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        {navItems.map(({ href, label, icon: Icon }) => {
+        <p className="px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-indigo-500 mb-1">Main</p>
+        {navItems.map(({ href, label, icon }) => {
           const active = pathname === href || pathname.startsWith(href + "/");
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                "flex items-center gap-3 rounded px-3 py-2 text-sm transition-colors",
-                active
-                  ? "bg-slate-700 text-white"
-                  : "text-slate-400 hover:bg-slate-800 hover:text-slate-100"
-              )}
-            >
-              <Icon className="h-4 w-4 shrink-0" />
-              {label}
-            </Link>
-          );
+          return <NavLink key={href} href={href} label={label} icon={icon} active={active} />;
         })}
       </nav>
 
-      {/* Bottom area */}
-      <div className="px-3 pb-4 border-t border-slate-700 pt-3 space-y-0.5">
-        <Link
-          href="/search"
-          className="flex items-center gap-3 rounded px-3 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-slate-100 transition-colors"
-        >
-          <Search className="h-4 w-4 shrink-0" />
-          Search
-        </Link>
+      {/* Bottom */}
+      <div className="px-3 pb-3 pt-3 border-t border-indigo-900/60 space-y-0.5">
+        <p className="px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-indigo-500 mb-1">Account</p>
+        <NavLink href="/search" label="Search" icon={Search} active={pathname === "/search"} />
         <Link
           href="/notifications"
-          className="flex items-center gap-3 rounded px-3 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-slate-100 transition-colors"
+          className={cn(
+            "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
+            pathname === "/notifications"
+              ? "bg-indigo-600 text-white shadow-sm"
+              : "text-indigo-200 hover:bg-indigo-800/60 hover:text-white"
+          )}
         >
-          <Bell className="h-4 w-4 shrink-0" />
+          <Bell className={cn("h-4 w-4 shrink-0", pathname === "/notifications" ? "text-white" : "text-indigo-400")} />
           Notifications
           {unreadCount > 0 && (
-            <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
+            <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 text-xs font-bold text-white px-1">
               {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}
         </Link>
         {userRole === "ADMIN" && (
-          <Link
-            href="/admin"
-            className="flex items-center gap-3 rounded px-3 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-slate-100 transition-colors"
-          >
-            <Settings className="h-4 w-4 shrink-0" />
-            Admin
-          </Link>
+          <NavLink href="/admin" label="Admin" icon={Settings} active={pathname === "/admin"} />
         )}
         <form action="/api/auth/signout" method="POST">
           <button
             type="submit"
-            className="flex w-full items-center gap-3 rounded px-3 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-slate-100 transition-colors"
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-indigo-200 hover:bg-indigo-800/60 hover:text-white transition-all duration-150"
           >
-            <LogOut className="h-4 w-4 shrink-0" />
+            <LogOut className="h-4 w-4 shrink-0 text-indigo-400" />
             Sign out
           </button>
         </form>
       </div>
 
-      {/* User info */}
+      {/* User */}
       <Link
         href="/profile"
-        className="px-4 py-3 border-t border-slate-700 hover:bg-slate-800 transition-colors"
+        className="flex items-center gap-3 px-4 py-3.5 border-t border-indigo-900/60 hover:bg-indigo-800/40 transition-colors"
       >
-        <p className="text-xs text-slate-400">Signed in as</p>
-        <p className="text-sm font-medium text-slate-100 truncate">{userName ?? "—"}</p>
+        <div className="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center shrink-0 text-xs font-bold text-white">
+          {userName ? initials(userName) : "?"}
+        </div>
+        <div className="min-w-0">
+          <p className="text-xs text-indigo-400 leading-none mb-0.5">Signed in as</p>
+          <p className="text-sm font-semibold text-white truncate leading-none">{userName ?? "—"}</p>
+        </div>
       </Link>
     </aside>
   );

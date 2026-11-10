@@ -46,7 +46,7 @@ export default function NotificationsPage() {
     <div className="max-w-2xl space-y-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h1 className="text-xl font-semibold text-slate-800">Notifications</h1>
+          <h1 className="text-2xl font-bold text-slate-900">Notifications</h1>
           {unread > 0 && <Badge>{unread} unread</Badge>}
         </div>
         {unread > 0 && (
