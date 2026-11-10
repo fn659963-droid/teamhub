@@ -5,12 +5,13 @@ import { requireAuth, hashPassword } from "@/lib/auth";
 export async function PATCH(req: NextRequest) {
   try {
     const user = await requireAuth();
-    const { realName, nickname, phone, handles, notes, password } = await req.json();
+    const { realName, nickname, phone, birthday, handles, notes, password } = await req.json();
 
     const data: Record<string, unknown> = {};
     if (realName !== undefined) data.realName = realName;
     if (nickname !== undefined) data.nickname = nickname;
     if (phone !== undefined) data.phone = phone;
+    if (birthday !== undefined) data.birthday = birthday ? new Date(birthday) : null;
     if (handles !== undefined) data.handles = handles;
     if (notes !== undefined) data.notes = notes;
     if (password) {

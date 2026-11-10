@@ -7,7 +7,7 @@ export async function GET() {
     const user = await requireAuth();
     const profile = await db.user.findUnique({
       where: { id: user.id },
-      select: { id: true, email: true, realName: true, nickname: true, phone: true, handles: true, notes: true, role: true },
+      select: { id: true, email: true, realName: true, nickname: true, phone: true, birthday: true, handles: true, notes: true, role: true },
     });
     return NextResponse.json(profile);
   } catch (e: unknown) {

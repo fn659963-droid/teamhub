@@ -1,13 +1,15 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [form, setForm] = useState({
-    realName: "", nickname: "", phone: "",
+    realName: "", nickname: "", phone: "", birthday: "",
     slackHandle: "", discordHandle: "", notes: "",
     newPassword: "", confirmPassword: "",
   });
@@ -24,6 +26,7 @@ export default function ProfilePage() {
           realName: d.realName ?? "",
           nickname: d.nickname ?? "",
           phone: d.phone ?? "",
+          birthday: d.birthday ? d.birthday.substring(0, 10) : "",
           slackHandle: h.slack ?? "",
           discordHandle: h.discord ?? "",
           notes: d.notes ?? "",
@@ -53,6 +56,7 @@ export default function ProfilePage() {
       realName: form.realName,
       nickname: form.nickname,
       phone: form.phone,
+      birthday: form.birthday || null,
       handles,
       notes: form.notes,
     };
@@ -66,8 +70,7 @@ export default function ProfilePage() {
       setError(data.error ?? "Failed to save");
     } else {
       setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
-      setForm((f) => ({ ...f, newPassword: "", confirmPassword: "" }));
+      setTimeout(() => router.push("/members"), 800);
     }
   }
 
@@ -89,9 +92,15 @@ export default function ProfilePage() {
                 <Input value={form.nickname} onChange={(e) => setForm((f) => ({ ...f, nickname: e.target.value }))} placeholder="Optional" />
               </div>
             </div>
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-slate-700">Phone</label>
-              <Input value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} placeholder="Optional" />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-sm font-medium text-slate-700">Phone</label>
+                <Input value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} placeholder="Optional" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm font-medium text-slate-700">Birthday</label>
+                <Input type="date" value={form.birthday} onChange={(e) => setForm((f) => ({ ...f, birthday: e.target.value }))} />
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
