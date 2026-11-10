@@ -31,11 +31,20 @@ export async function GET(req: NextRequest) {
   }
 }
 
+const VALID_STATUSES = ["DRAFT", "SUBMITTED", "ACKNOWLEDGED", "NOT_SUBMITTED"];
+
 // POST /api/worklog
 export async function POST(req: NextRequest) {
   try {
     const user = await requireAuth();
     const { date, morningPlan, whatIDid, tomorrowPlan, status } = await req.json();
+
+    if (!date) {
+      return NextResponse.json({ error: "date is required" }, { status: 400 });
+    }
+    if (status && !VALID_STATUSES.includes(status)) {
+      return NextResponse.json({ error: "invalid status" }, { status: 400 });
+    }
 
     const log = await db.workLog.upsert({
       where: { userId_date: { userId: user.id, date: new Date(date) } },

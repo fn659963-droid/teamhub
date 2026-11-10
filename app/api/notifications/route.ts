@@ -27,7 +27,7 @@ export async function PATCH(req: NextRequest) {
     if (markAll) {
       await db.notification.updateMany({ where: { userId: user.id, isRead: false }, data: { isRead: true } });
     } else if (id) {
-      await db.notification.updateMany({ where: { id, userId: user.id }, data: { isRead: true } });
+      await db.notification.update({ where: { id }, data: { isRead: true } });
     }
 
     return NextResponse.json({ ok: true });
