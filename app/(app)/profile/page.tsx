@@ -76,44 +76,44 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-2xl space-y-6">
-      <h1 className="text-2xl font-bold text-slate-900">My Profile</h1>
+      <h1 className="text-3xl font-bold text-black">My Profile</h1>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <Card>
           <CardHeader><CardTitle>Personal Information</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-slate-700">Real Name</label>
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-black">Real Name</label>
                 <Input value={form.realName} onChange={(e) => setForm((f) => ({ ...f, realName: e.target.value }))} required />
               </div>
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-slate-700">Nickname</label>
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-black">Nickname</label>
                 <Input value={form.nickname} onChange={(e) => setForm((f) => ({ ...f, nickname: e.target.value }))} placeholder="Optional" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-slate-700">Phone</label>
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-black">Phone</label>
                 <Input value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} placeholder="Optional" />
               </div>
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-slate-700">Birthday</label>
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-black">Birthday</label>
                 <Input type="date" value={form.birthday} onChange={(e) => setForm((f) => ({ ...f, birthday: e.target.value }))} />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-slate-700">Slack Handle</label>
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-black">Slack Handle</label>
                 <Input value={form.slackHandle} onChange={(e) => setForm((f) => ({ ...f, slackHandle: e.target.value }))} placeholder="@username" />
               </div>
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-slate-700">Discord Handle</label>
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-black">Discord Handle</label>
                 <Input value={form.discordHandle} onChange={(e) => setForm((f) => ({ ...f, discordHandle: e.target.value }))} placeholder="username#0000" />
               </div>
             </div>
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-slate-700">Notes</label>
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-black">Notes</label>
               <Textarea value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))} placeholder="Optional notes about you" rows={3} />
             </div>
           </CardContent>
@@ -122,18 +122,22 @@ export default function ProfilePage() {
         <Card>
           <CardHeader><CardTitle>Change Password</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-slate-700">New Password</label>
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-black">New Password</label>
               <Input type="password" value={form.newPassword} onChange={(e) => setForm((f) => ({ ...f, newPassword: e.target.value }))} placeholder="Leave blank to keep current" minLength={8} />
             </div>
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-slate-700">Confirm Password</label>
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-black">Confirm Password</label>
               <Input type="password" value={form.confirmPassword} onChange={(e) => setForm((f) => ({ ...f, confirmPassword: e.target.value }))} placeholder="Repeat new password" />
             </div>
           </CardContent>
         </Card>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && (
+          <div className="rounded-lg border border-neutral-200 bg-neutral-50 px-4 py-3 text-base text-black">
+            {error}
+          </div>
+        )}
         <div className="flex justify-end">
           <Button type="submit" disabled={loading}>
             {loading ? "Saving…" : saved ? "Saved ✓" : "Save Changes"}

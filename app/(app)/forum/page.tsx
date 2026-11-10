@@ -51,62 +51,61 @@ export default function ForumPage() {
   return (
     <div className="max-w-3xl space-y-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900">Forum</h1>
+        <h1 className="text-3xl font-bold text-black">Forum</h1>
         <Button size="sm" onClick={() => setShowCreate(true)}>
           <Plus className="h-4 w-4" /> New Topic
         </Button>
       </div>
 
-      <div className="rounded-xl border border-slate-200 divide-y divide-slate-100 overflow-hidden bg-white shadow-sm">
+      <div className="rounded-xl border border-neutral-200 divide-y divide-neutral-100 overflow-hidden bg-white">
         {topics.length === 0 && (
           <div className="p-16 text-center">
-            <div className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3">
-              <MessageSquare className="h-5 w-5 text-slate-400" />
+            <div className="h-14 w-14 rounded-full bg-neutral-100 flex items-center justify-center mx-auto mb-4">
+              <MessageSquare className="h-6 w-6 text-neutral-400" />
             </div>
-            <p className="text-sm font-medium text-slate-600">No topics yet</p>
-            <p className="text-xs text-slate-400 mt-1">Start the first conversation!</p>
+            <p className="text-base font-semibold text-black">No topics yet</p>
+            <p className="text-sm text-neutral-400 mt-1">Start the first conversation!</p>
           </div>
         )}
         {topics.map((topic) => (
           <Link
             key={topic.id}
             href={`/forum/${topic.id}`}
-            className={`flex items-start gap-5 px-6 py-5 hover:bg-slate-50 transition-colors ${topic.isPinned ? "bg-amber-50 hover:bg-amber-50" : ""}`}
+            className={`flex items-start gap-5 px-6 py-5 hover:bg-neutral-50 transition-colors ${topic.isPinned ? "bg-neutral-50" : ""}`}
           >
-            {/* reply count badge */}
             <div className="flex flex-col items-center gap-0.5 shrink-0 w-10 pt-0.5">
-              <span className="text-lg font-bold text-slate-700">{topic._count.replies}</span>
-              <span className="text-[10px] text-slate-400 uppercase tracking-wide">replies</span>
+              <span className="text-xl font-bold text-black">{topic._count.replies}</span>
+              <span className="text-xs text-neutral-400 uppercase tracking-wide">replies</span>
             </div>
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap mb-1">
-                {topic.isPinned && <Pin className="h-3.5 w-3.5 text-amber-500" />}
-                <span className="text-base font-semibold text-slate-800 leading-snug">
+                {topic.isPinned && <Pin className="h-3.5 w-3.5 text-black" />}
+                <span className="text-lg font-semibold text-black leading-snug">
                   {topic.title}
                 </span>
                 {topic.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
+                  <Badge key={tag} variant="secondary" className="text-sm">{tag}</Badge>
                 ))}
               </div>
-              <p className="text-sm text-slate-500 line-clamp-1 mb-1.5">{topic.content}</p>
-              <p className="text-xs text-slate-400">
-                <span className="font-medium text-slate-500">{topic.author.nickname ?? topic.author.realName}</span>
+              <p className="text-base text-neutral-500 line-clamp-1 mb-1.5">{topic.content}</p>
+              <p className="text-sm text-neutral-400">
+                <span className="font-medium text-neutral-600">{topic.author.nickname ?? topic.author.realName}</span>
                 {" · "}{formatDateTime(topic.createdAt)}
               </p>
             </div>
 
-            <MessageSquare className="h-4 w-4 text-slate-300 shrink-0 mt-1" />
+            <MessageSquare className="h-4 w-4 text-neutral-300 shrink-0 mt-1.5" />
           </Link>
         ))}
       </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-3">
           <Button variant="outline" size="icon" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <span className="text-sm text-slate-600">{page} / {totalPages}</span>
+          <span className="text-base font-medium text-black">{page} / {totalPages}</span>
           <Button variant="outline" size="icon" disabled={page === totalPages} onClick={() => setPage((p) => p + 1)}>
             <ChevronRight className="h-4 w-4" />
           </Button>
@@ -117,16 +116,16 @@ export default function ForumPage() {
         <DialogContent>
           <DialogHeader><DialogTitle>New Topic</DialogTitle></DialogHeader>
           <DialogBody className="space-y-4">
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-slate-700">Title</label>
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-black">Title</label>
               <Input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} placeholder="Topic title" />
             </div>
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-slate-700">Content</label>
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-black">Content</label>
               <Textarea value={form.content} onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))} rows={5} placeholder="Write your post…" />
             </div>
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-slate-700">Tags</label>
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-black">Tags</label>
               <Input value={form.tags} onChange={(e) => setForm((f) => ({ ...f, tags: e.target.value }))} placeholder="tag1, tag2 (comma separated)" />
             </div>
           </DialogBody>

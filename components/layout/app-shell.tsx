@@ -14,7 +14,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
   });
 
   return (
-    <div className="flex min-h-screen" style={{ background: "#f1f5f9" }}>
+    <div className="flex min-h-screen bg-neutral-100">
       <Sidebar
         unreadCount={unreadCount}
         userRole={user.role}

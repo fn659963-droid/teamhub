@@ -28,9 +28,9 @@ interface User {
 }
 
 function statusVariant(s: WorkLogStatus) {
-  if (s === "ACKNOWLEDGED") return "success";
+  if (s === "ACKNOWLEDGED") return "secondary";
   if (s === "SUBMITTED") return "default";
-  return "secondary";
+  return "outline";
 }
 
 function dateToISO(d: Date) {
@@ -102,12 +102,12 @@ export default function WorkLogPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900">Work Log</h1>
+        <h1 className="text-3xl font-bold text-black">Work Log</h1>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon" onClick={() => { const d = new Date(date); d.setDate(d.getDate() - 1); setDate(d); }}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <span className="text-sm font-semibold text-slate-700 w-32 text-center">{formatDate(date)}</span>
+          <span className="text-base font-semibold text-black w-36 text-center">{formatDate(date)}</span>
           <Button variant="outline" size="icon" disabled={isToday} onClick={() => { const d = new Date(date); d.setDate(d.getDate() + 1); setDate(d); }}>
             <ChevronRight className="h-4 w-4" />
           </Button>
@@ -118,27 +118,27 @@ export default function WorkLogPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+        <table className="w-full text-base">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200">
-              <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-slate-500 w-36">Member</th>
-              <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-slate-500 w-28">Status</th>
-              <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-slate-500">Morning Plan</th>
-              <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-slate-500">What I Did</th>
-              <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-slate-500">Tomorrow&apos;s Plan</th>
+            <tr className="bg-neutral-50 border-b border-neutral-200">
+              <th className="text-left px-5 py-4 text-sm font-semibold uppercase tracking-wide text-neutral-500 w-36">Member</th>
+              <th className="text-left px-5 py-4 text-sm font-semibold uppercase tracking-wide text-neutral-500 w-28">Status</th>
+              <th className="text-left px-5 py-4 text-sm font-semibold uppercase tracking-wide text-neutral-500">Morning Plan</th>
+              <th className="text-left px-5 py-4 text-sm font-semibold uppercase tracking-wide text-neutral-500">What I Did</th>
+              <th className="text-left px-5 py-4 text-sm font-semibold uppercase tracking-wide text-neutral-500">Tomorrow&apos;s Plan</th>
               <th className="w-20"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-neutral-100">
             {allUsers.map((u) => {
               const log = getLog(u.id);
               const isMe = u.id === myId;
               return (
-                <tr key={u.id} className={isMe ? "bg-indigo-50/40" : "hover:bg-slate-50/60 transition-colors"}>
-                  <td className="px-5 py-4 font-medium text-slate-800">
+                <tr key={u.id} className={isMe ? "bg-neutral-50" : "hover:bg-neutral-50/60 transition-colors"}>
+                  <td className="px-5 py-4 font-semibold text-black">
                     {u.nickname ?? u.realName}
-                    {isMe && <span className="ml-1.5 text-xs text-indigo-400 font-normal">(you)</span>}
+                    {isMe && <span className="ml-1.5 text-sm text-neutral-400 font-normal">(you)</span>}
                   </td>
                   <td className="px-5 py-4">
                     {log ? (
@@ -147,9 +147,9 @@ export default function WorkLogPage() {
                       <Badge variant="outline">—</Badge>
                     )}
                   </td>
-                  <td className="px-5 py-4 text-slate-600 max-w-xs whitespace-pre-wrap text-sm">{log?.morningPlan ?? <span className="text-slate-300">—</span>}</td>
-                  <td className="px-5 py-4 text-slate-600 max-w-xs whitespace-pre-wrap text-sm">{log?.whatIDid ?? <span className="text-slate-300">—</span>}</td>
-                  <td className="px-5 py-4 text-slate-600 max-w-xs whitespace-pre-wrap text-sm">{log?.tomorrowPlan ?? <span className="text-slate-300">—</span>}</td>
+                  <td className="px-5 py-4 text-neutral-700 max-w-xs whitespace-pre-wrap">{log?.morningPlan ?? <span className="text-neutral-300">—</span>}</td>
+                  <td className="px-5 py-4 text-neutral-700 max-w-xs whitespace-pre-wrap">{log?.whatIDid ?? <span className="text-neutral-300">—</span>}</td>
+                  <td className="px-5 py-4 text-neutral-700 max-w-xs whitespace-pre-wrap">{log?.tomorrowPlan ?? <span className="text-neutral-300">—</span>}</td>
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-1">
                       {isMe && isToday && (
@@ -159,7 +159,7 @@ export default function WorkLogPage() {
                       )}
                       {myRole === "ADMIN" && log && (
                         <button
-                          className="text-slate-400 hover:text-indigo-600 transition-colors"
+                          className="text-neutral-400 hover:text-black transition-colors"
                           title="Add comment"
                           onClick={() => { setCommentTarget(log); setCommentText(""); }}
                         >
@@ -183,8 +183,8 @@ export default function WorkLogPage() {
           </DialogHeader>
           <DialogBody className="grid grid-cols-3 gap-4">
             {(["morningPlan", "whatIDid", "tomorrowPlan"] as const).map((field, i) => (
-              <div key={field} className="space-y-1">
-                <label className="text-xs font-medium text-slate-600 uppercase tracking-wide">
+              <div key={field} className="space-y-2">
+                <label className="text-sm font-semibold text-black uppercase tracking-wide">
                   {["Morning Plan", "What I Did", "Tomorrow's Plan"][i]}
                 </label>
                 <Textarea
@@ -211,8 +211,8 @@ export default function WorkLogPage() {
             <DialogTitle>Comment on work log</DialogTitle>
           </DialogHeader>
           <DialogBody className="space-y-3">
-            <p className="text-sm text-slate-600">
-              Leaving a comment will mark this log as <Badge variant="success">ACKNOWLEDGED</Badge>.
+            <p className="text-base text-neutral-600">
+              Leaving a comment will mark this log as <strong>Acknowledged</strong>.
             </p>
             <Textarea
               value={commentText}
@@ -222,10 +222,10 @@ export default function WorkLogPage() {
             />
             {commentTarget?.comments?.length ? (
               <div className="space-y-2 pt-1">
-                <p className="text-xs font-medium text-slate-500 uppercase">Previous comments</p>
+                <p className="text-sm font-semibold text-neutral-500 uppercase tracking-wide">Previous comments</p>
                 {commentTarget.comments.map((c) => (
-                  <div key={c.id} className="rounded bg-slate-50 px-3 py-2 text-sm text-slate-700">
-                    <span className="font-medium">{c.author.nickname ?? c.author.realName}: </span>
+                  <div key={c.id} className="rounded-lg bg-neutral-50 border border-neutral-100 px-4 py-3 text-base text-black">
+                    <span className="font-semibold">{c.author.nickname ?? c.author.realName}: </span>
                     {c.content}
                   </div>
                 ))}

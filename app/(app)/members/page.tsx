@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -33,15 +32,6 @@ function formatBirthday(d: string | null) {
   if (!d) return null;
   return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
-
-const avatarColors = [
-  "bg-violet-100 text-violet-700",
-  "bg-blue-100 text-blue-700",
-  "bg-emerald-100 text-emerald-700",
-  "bg-amber-100 text-amber-700",
-  "bg-rose-100 text-rose-700",
-  "bg-sky-100 text-sky-700",
-];
 
 function initials(name: string) {
   return name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
@@ -114,67 +104,66 @@ export default function MembersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Members</h1>
-          <p className="text-sm text-slate-500 mt-0.5">{members.length} active member{members.length !== 1 ? "s" : ""}</p>
+          <h1 className="text-3xl font-bold text-black">Members</h1>
+          <p className="text-base text-neutral-500 mt-1">{members.length} active member{members.length !== 1 ? "s" : ""}</p>
         </div>
         <Link
           href="/profile"
-          className="text-sm font-medium text-slate-600 hover:text-slate-900 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-50 transition-colors"
+          className="text-base font-medium text-black border border-neutral-300 rounded-lg px-4 py-2 hover:bg-neutral-100 transition-colors"
         >
           Edit my profile
         </Link>
       </div>
 
-      <div className="rounded-xl border border-slate-200 overflow-hidden bg-white shadow-sm">
-        <table className="w-full text-sm">
+      <div className="rounded-xl border border-neutral-200 overflow-hidden bg-white">
+        <table className="w-full text-base">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200">
-              <th className="text-left px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide">Name</th>
-              <th className="text-left px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide">Nickname</th>
-              <th className="text-left px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide">Email</th>
-              <th className="text-left px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide">Birthday</th>
-              <th className="text-left px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide">Role</th>
-              <th className="text-left px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide">Joined</th>
+            <tr className="bg-neutral-50 border-b border-neutral-200">
+              <th className="text-left px-5 py-4 font-semibold text-neutral-500 text-sm uppercase tracking-wide">Name</th>
+              <th className="text-left px-5 py-4 font-semibold text-neutral-500 text-sm uppercase tracking-wide">Nickname</th>
+              <th className="text-left px-5 py-4 font-semibold text-neutral-500 text-sm uppercase tracking-wide">Email</th>
+              <th className="text-left px-5 py-4 font-semibold text-neutral-500 text-sm uppercase tracking-wide">Birthday</th>
+              <th className="text-left px-5 py-4 font-semibold text-neutral-500 text-sm uppercase tracking-wide">Role</th>
+              <th className="text-left px-5 py-4 font-semibold text-neutral-500 text-sm uppercase tracking-wide">Joined</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-neutral-100">
             {members.length === 0 && (
-              <tr><td colSpan={6} className="px-5 py-12 text-center text-sm text-slate-400">No members found.</td></tr>
+              <tr><td colSpan={6} className="px-5 py-12 text-center text-base text-neutral-400">No members found.</td></tr>
             )}
-            {members.map((m, i) => {
+            {members.map((m) => {
               const isMe = m.id === myId;
-              const color = avatarColors[i % avatarColors.length];
               return (
-                <tr key={m.id} className={`transition-colors ${isMe ? "bg-indigo-50/40" : "hover:bg-slate-50/60"}`}>
+                <tr key={m.id} className={`transition-colors ${isMe ? "bg-neutral-50" : "hover:bg-neutral-50/60"}`}>
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
-                      <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 font-semibold text-xs ${color}`}>
+                      <div className="h-9 w-9 rounded-full bg-neutral-200 flex items-center justify-center shrink-0 font-semibold text-sm text-black">
                         {initials(m.realName)}
                       </div>
                       <div className="leading-tight">
-                        <span className="font-medium text-slate-800">{m.realName}</span>
-                        {isMe && <span className="ml-1.5 text-xs text-indigo-500 font-medium">you</span>}
+                        <span className="font-semibold text-black">{m.realName}</span>
+                        {isMe && <span className="ml-1.5 text-sm text-neutral-400 font-normal">(you)</span>}
                       </div>
                     </div>
                   </td>
-                  <td className="px-5 py-4 text-slate-500">{m.nickname ?? <span className="text-slate-300">—</span>}</td>
+                  <td className="px-5 py-4 text-neutral-600">{m.nickname ?? <span className="text-neutral-300">—</span>}</td>
                   <td className="px-5 py-4">
                     <button
-                      className="text-indigo-600 hover:text-indigo-800 hover:underline text-sm"
+                      className="text-black hover:underline underline-offset-4"
                       onClick={() => lookupContact(m.email)}
                     >
                       {m.email}
                     </button>
                   </td>
-                  <td className="px-5 py-4 text-slate-500">{formatBirthday(m.birthday) ?? <span className="text-slate-300">—</span>}</td>
+                  <td className="px-5 py-4 text-neutral-600">{formatBirthday(m.birthday) ?? <span className="text-neutral-300">—</span>}</td>
                   <td className="px-5 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                      m.role === "ADMIN" ? "bg-violet-100 text-violet-700" : "bg-slate-100 text-slate-600"
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-semibold ${
+                      m.role === "ADMIN" ? "bg-black text-white" : "bg-neutral-100 text-neutral-600"
                     }`}>
                       {m.role}
                     </span>
                   </td>
-                  <td className="px-5 py-4 text-slate-500">{formatDate(m.createdAt)}</td>
+                  <td className="px-5 py-4 text-neutral-600">{formatDate(m.createdAt)}</td>
                 </tr>
               );
             })}
@@ -189,7 +178,7 @@ export default function MembersPage() {
             <div className="flex items-center justify-between">
               <DialogTitle>Contact Info</DialogTitle>
               {isAdmin && !editingContact && (
-                <button onClick={() => setEditingContact(true)} className="text-slate-400 hover:text-slate-700 p-1" title="Edit">
+                <button onClick={() => setEditingContact(true)} className="text-neutral-400 hover:text-black p-1 transition-colors" title="Edit">
                   <Pencil className="h-4 w-4" />
                 </button>
               )}
@@ -197,39 +186,29 @@ export default function MembersPage() {
           </DialogHeader>
 
           {contactCard === "loading" ? (
-            <DialogBody><p className="text-sm text-slate-400">Loading…</p></DialogBody>
+            <DialogBody><p className="text-base text-neutral-400">Loading…</p></DialogBody>
           ) : editingContact ? (
             <>
               <DialogBody className="space-y-3">
-                <p className="text-xs text-slate-500">Email: <span className="font-medium text-slate-700">{contactEmail}</span></p>
+                <p className="text-sm text-neutral-500">Email: <span className="font-medium text-black">{contactEmail}</span></p>
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-700">Real Name</label>
-                    <Input value={editForm.realName} onChange={(e) => setEditForm((f) => ({ ...f, realName: e.target.value }))} />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-700">Nickname</label>
-                    <Input value={editForm.nickname} onChange={(e) => setEditForm((f) => ({ ...f, nickname: e.target.value }))} />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-700">Phone</label>
-                    <Input value={editForm.phone} onChange={(e) => setEditForm((f) => ({ ...f, phone: e.target.value }))} />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-700">Birthday</label>
-                    <Input type="date" value={editForm.birthday} onChange={(e) => setEditForm((f) => ({ ...f, birthday: e.target.value }))} />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-700">Slack</label>
-                    <Input value={editForm.slack} onChange={(e) => setEditForm((f) => ({ ...f, slack: e.target.value }))} />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-700">Discord</label>
-                    <Input value={editForm.discord} onChange={(e) => setEditForm((f) => ({ ...f, discord: e.target.value }))} />
-                  </div>
+                  {[
+                    ["Real Name", "realName"], ["Nickname", "nickname"],
+                    ["Phone", "phone"], ["Birthday", "birthday"],
+                    ["Slack", "slack"], ["Discord", "discord"],
+                  ].map(([label, field]) => (
+                    <div key={field} className="space-y-1.5">
+                      <label className="text-sm font-medium text-black">{label}</label>
+                      <Input
+                        type={field === "birthday" ? "date" : "text"}
+                        value={editForm[field as keyof typeof editForm]}
+                        onChange={(e) => setEditForm((f) => ({ ...f, [field]: e.target.value }))}
+                      />
+                    </div>
+                  ))}
                 </div>
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-slate-700">Notes</label>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-black">Notes</label>
                   <Textarea value={editForm.notes} onChange={(e) => setEditForm((f) => ({ ...f, notes: e.target.value }))} rows={2} />
                 </div>
               </DialogBody>
@@ -240,23 +219,23 @@ export default function MembersPage() {
             </>
           ) : contactData ? (
             <>
-              <DialogBody className="space-y-2 text-sm text-slate-700">
-                <div><span className="font-medium">Email:</span> {contactData.email}</div>
-                {contactData.realName && <div><span className="font-medium">Name:</span> {contactData.realName}</div>}
-                {contactData.nickname && <div><span className="font-medium">Nickname:</span> {contactData.nickname}</div>}
-                {contactData.phone && <div><span className="font-medium">Phone:</span> {contactData.phone}</div>}
-                {contactData.birthday && <div><span className="font-medium">Birthday:</span> {formatBirthday(contactData.birthday)}</div>}
+              <DialogBody className="space-y-3 text-base text-black">
+                <div><span className="font-semibold">Email:</span> {contactData.email}</div>
+                {contactData.realName && <div><span className="font-semibold">Name:</span> {contactData.realName}</div>}
+                {contactData.nickname && <div><span className="font-semibold">Nickname:</span> {contactData.nickname}</div>}
+                {contactData.phone && <div><span className="font-semibold">Phone:</span> {contactData.phone}</div>}
+                {contactData.birthday && <div><span className="font-semibold">Birthday:</span> {formatBirthday(contactData.birthday)}</div>}
                 {contactData.handles && Object.keys(contactData.handles).length > 0 && (
                   <div>
-                    <span className="font-medium">Handles:</span>
+                    <span className="font-semibold">Handles:</span>
                     <div className="mt-1 flex flex-wrap gap-1">
                       {Object.entries(contactData.handles).map(([k, v]) => (
-                        <span key={k} className="text-xs bg-slate-100 rounded px-1.5 py-0.5">{k}: {v}</span>
+                        <span key={k} className="text-sm bg-neutral-100 border border-neutral-200 rounded px-2 py-0.5">{k}: {v}</span>
                       ))}
                     </div>
                   </div>
                 )}
-                {contactData.notes && <div><span className="font-medium">Notes:</span> {contactData.notes}</div>}
+                {contactData.notes && <div><span className="font-semibold">Notes:</span> {contactData.notes}</div>}
               </DialogBody>
               <DialogFooter>
                 <Button variant="outline" onClick={() => { setContactCard(null); setEditingContact(false); }}>Close</Button>
@@ -265,11 +244,11 @@ export default function MembersPage() {
           ) : (
             <>
               <DialogBody>
-                <div className="flex items-center gap-2 text-slate-400 text-sm">
+                <div className="flex items-center gap-2 text-neutral-500 text-base">
                   <Info className="h-4 w-4" />
                   No contact info registered for this email.
                 </div>
-                {isAdmin && <p className="text-xs text-slate-400 mt-2">Click the edit icon above to add contact info.</p>}
+                {isAdmin && <p className="text-sm text-neutral-400 mt-2">Click the edit icon above to add contact info.</p>}
               </DialogBody>
               <DialogFooter>
                 <Button variant="outline" onClick={() => { setContactCard(null); setEditingContact(false); }}>Close</Button>

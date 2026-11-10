@@ -10,7 +10,7 @@ export function SelectTrigger({ className, children, ...props }: React.Component
   return (
     <RadixSelect.Trigger
       className={cn(
-        "flex h-9 w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 focus:border-indigo-400 disabled:cursor-not-allowed disabled:opacity-50",
+        "flex h-11 w-full items-center justify-between rounded-lg border border-neutral-300 bg-white px-4 py-2 text-base text-black focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 focus:border-black disabled:cursor-not-allowed disabled:opacity-50",
         className
       )}
       {...props}
@@ -28,7 +28,7 @@ export function SelectContent({ className, children, ...props }: React.Component
     <RadixSelect.Portal>
       <RadixSelect.Content
         className={cn(
-          "relative z-50 min-w-[8rem] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg",
+          "relative z-50 min-w-[8rem] overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-lg",
           className
         )}
         {...props}
@@ -43,17 +43,17 @@ export function SelectItem({ className, children, ...props }: React.ComponentPro
   return (
     <RadixSelect.Item
       className={cn(
-        "relative flex w-full cursor-default select-none items-center rounded-lg px-2 py-1.5 text-sm text-slate-700 outline-none focus:bg-indigo-50 focus:text-indigo-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "relative flex w-full cursor-default select-none items-center rounded-lg px-2 py-2 text-base text-black outline-none focus:bg-neutral-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className
       )}
       {...props}
     >
-      <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+      <span className="absolute left-2 flex h-4 w-4 items-center justify-center">
         <RadixSelect.ItemIndicator>
-          <Check className="h-3.5 w-3.5 text-indigo-600" />
+          <Check className="h-4 w-4 text-black" />
         </RadixSelect.ItemIndicator>
       </span>
-      <RadixSelect.ItemText className="pl-5">{children}</RadixSelect.ItemText>
+      <RadixSelect.ItemText className="pl-6">{children}</RadixSelect.ItemText>
     </RadixSelect.Item>
   );
 }

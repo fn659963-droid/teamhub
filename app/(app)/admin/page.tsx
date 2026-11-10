@@ -24,36 +24,36 @@ export default async function AdminPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-bold text-slate-900">Admin Panel</h1>
+      <h1 className="text-3xl font-bold text-black">Admin Panel</h1>
 
       <section className="space-y-3">
-        <h2 className="text-base font-semibold text-slate-700">Member Management</h2>
+        <h2 className="text-xl font-semibold text-black">Member Management</h2>
         <AdminUsersClient initialUsers={users} />
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-base font-semibold text-slate-700">Audit Log</h2>
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <table className="w-full text-sm">
+        <h2 className="text-xl font-semibold text-black">Audit Log</h2>
+        <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+          <table className="w-full text-base">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200">
-                <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-slate-500">Time</th>
-                <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-slate-500">User</th>
-                <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-slate-500">Action</th>
-                <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-slate-500">Entity</th>
+              <tr className="bg-neutral-50 border-b border-neutral-200">
+                <th className="text-left px-5 py-4 text-sm font-semibold uppercase tracking-wide text-neutral-500">Time</th>
+                <th className="text-left px-5 py-4 text-sm font-semibold uppercase tracking-wide text-neutral-500">User</th>
+                <th className="text-left px-5 py-4 text-sm font-semibold uppercase tracking-wide text-neutral-500">Action</th>
+                <th className="text-left px-5 py-4 text-sm font-semibold uppercase tracking-wide text-neutral-500">Entity</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-neutral-100">
               {auditLogs.map((log) => (
-                <tr key={log.id} className="hover:bg-slate-50/60 transition-colors">
-                  <td className="px-5 py-3 text-slate-400 text-xs">{formatDate(log.createdAt)}</td>
-                  <td className="px-5 py-3 text-slate-700 font-medium">{log.user ? (log.user.nickname ?? log.user.realName) : "System"}</td>
-                  <td className="px-5 py-3"><Badge variant="secondary">{log.action}</Badge></td>
-                  <td className="px-5 py-3 text-slate-600">{log.entity}</td>
+                <tr key={log.id} className="hover:bg-neutral-50 transition-colors">
+                  <td className="px-5 py-3.5 text-neutral-400 text-sm">{formatDate(log.createdAt)}</td>
+                  <td className="px-5 py-3.5 text-black font-semibold">{log.user ? (log.user.nickname ?? log.user.realName) : "System"}</td>
+                  <td className="px-5 py-3.5"><Badge variant="secondary">{log.action}</Badge></td>
+                  <td className="px-5 py-3.5 text-neutral-600">{log.entity}</td>
                 </tr>
               ))}
               {auditLogs.length === 0 && (
-                <tr><td colSpan={4} className="px-5 py-10 text-center text-slate-400 text-sm">No audit logs yet.</td></tr>
+                <tr><td colSpan={4} className="px-5 py-10 text-center text-neutral-400">No audit logs yet.</td></tr>
               )}
             </tbody>
           </table>

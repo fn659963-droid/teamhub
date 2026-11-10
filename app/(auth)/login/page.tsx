@@ -40,24 +40,24 @@ export default function LoginPage() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1">
-            <label className="text-sm font-medium text-slate-700">Email</label>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-black">Email</label>
             <Input name="email" type="email" placeholder="you@example.com" required />
           </div>
-          <div className="space-y-1">
-            <label className="text-sm font-medium text-slate-700">Password</label>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-black">Password</label>
             <Input name="password" type="password" placeholder="••••••••" required />
           </div>
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="text-sm text-black font-medium border border-neutral-300 rounded-lg px-3 py-2 bg-neutral-50">{error}</p>}
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Signing in…" : "Sign In"}
           </Button>
         </form>
-        <div className="mt-4 flex items-center justify-between text-sm">
-          <Link href="/forgot-password" className="text-indigo-600 hover:text-indigo-800 hover:underline">
+        <div className="mt-5 flex items-center justify-between text-sm">
+          <Link href="/forgot-password" className="text-black hover:underline underline-offset-4">
             Forgot password?
           </Link>
-          <Link href="/register" className="text-indigo-600 hover:text-indigo-800 hover:underline">
+          <Link href="/register" className="text-black hover:underline underline-offset-4 font-medium">
             Create account
           </Link>
         </div>
