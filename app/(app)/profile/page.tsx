@@ -35,6 +35,10 @@ export default function ProfilePage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    if (form.newPassword && !form.confirmPassword) {
+      setError("Please confirm your new password");
+      return;
+    }
     if (form.newPassword && form.newPassword !== form.confirmPassword) {
       setError("Passwords do not match");
       return;
