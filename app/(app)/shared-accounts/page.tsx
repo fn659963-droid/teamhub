@@ -192,28 +192,28 @@ export default function SharedAccountsPage() {
                 <tr key={acc.id} className="hover:bg-slate-50">
                   <td className="px-4 py-3 font-medium text-slate-800">{acc.platform}</td>
                   <td className="px-4 py-3">
-                    <button className="text-blue-600 hover:underline text-sm" onClick={() => lookupContact(acc.accountEmail)}>
+                    <button className="text-indigo-600 hover:text-indigo-800 hover:underline text-sm" onClick={() => lookupContact(acc.accountEmail)}>
                       {acc.accountEmail}
                     </button>
                   </td>
                   <td className="px-4 py-3 text-slate-600">{acc.anydeskAddr ?? <span className="text-slate-300">—</span>}</td>
                   <td className="px-4 py-3">
                     {acc.owner ? (
-                      <button className="text-blue-600 hover:underline" onClick={() => lookupContact(acc.owner!.email)}>
+                      <button className="text-indigo-600 hover:text-indigo-800 hover:underline" onClick={() => lookupContact(acc.owner!.email)}>
                         {displayName(acc.owner)}
                       </button>
                     ) : <span className="text-slate-300">—</span>}
                   </td>
                   <td className="px-4 py-3">
                     {acc.currentUser ? (
-                      <button className="text-blue-600 hover:underline" onClick={() => lookupContact(acc.currentUser!.email)}>
+                      <button className="text-indigo-600 hover:text-indigo-800 hover:underline" onClick={() => lookupContact(acc.currentUser!.email)}>
                         {displayName(acc.currentUser)}
                       </button>
                     ) : <span className="text-slate-300">—</span>}
                   </td>
                   <td className="px-4 py-3">
                     {acc.previousUser ? (
-                      <button className="text-blue-600 hover:underline" onClick={() => lookupContact(acc.previousUser!.email)}>
+                      <button className="text-indigo-600 hover:text-indigo-800 hover:underline" onClick={() => lookupContact(acc.previousUser!.email)}>
                         {displayName(acc.previousUser)}
                       </button>
                     ) : <span className="text-slate-300">—</span>}
