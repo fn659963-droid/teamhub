@@ -57,31 +57,41 @@ export default function ForumPage() {
         </Button>
       </div>
 
-      <div className="rounded-lg border border-slate-200 divide-y divide-slate-100 overflow-hidden">
+      <div className="rounded-xl border border-slate-200 divide-y divide-slate-100 overflow-hidden bg-white shadow-sm">
         {topics.length === 0 && (
-          <div className="p-12 text-center text-sm text-slate-400">No topics yet. Start one!</div>
+          <div className="p-16 text-center text-sm text-slate-400">No topics yet. Start one!</div>
         )}
         {topics.map((topic) => (
-          <div key={topic.id} className="flex items-start gap-4 px-4 py-3 hover:bg-slate-50">
+          <Link
+            key={topic.id}
+            href={`/forum/${topic.id}`}
+            className={`flex items-start gap-5 px-6 py-5 hover:bg-slate-50 transition-colors ${topic.isPinned ? "bg-amber-50 hover:bg-amber-50" : ""}`}
+          >
+            {/* reply count badge */}
+            <div className="flex flex-col items-center gap-0.5 shrink-0 w-10 pt-0.5">
+              <span className="text-lg font-bold text-slate-700">{topic._count.replies}</span>
+              <span className="text-[10px] text-slate-400 uppercase tracking-wide">replies</span>
+            </div>
+
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                {topic.isPinned && <Pin className="h-3.5 w-3.5 text-slate-400" />}
-                <Link href={`/forum/${topic.id}`} className="text-sm font-medium text-slate-800 hover:underline">
+              <div className="flex items-center gap-2 flex-wrap mb-1">
+                {topic.isPinned && <Pin className="h-3.5 w-3.5 text-amber-500" />}
+                <span className="text-base font-semibold text-slate-800 leading-snug">
                   {topic.title}
-                </Link>
+                </span>
                 {topic.tags.map((tag) => (
                   <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
                 ))}
               </div>
-              <p className="text-xs text-slate-400 mt-0.5">
-                {topic.author.nickname ?? topic.author.realName} · {formatDateTime(topic.createdAt)}
+              <p className="text-sm text-slate-500 line-clamp-1 mb-1.5">{topic.content}</p>
+              <p className="text-xs text-slate-400">
+                <span className="font-medium text-slate-500">{topic.author.nickname ?? topic.author.realName}</span>
+                {" · "}{formatDateTime(topic.createdAt)}
               </p>
             </div>
-            <div className="flex items-center gap-1 text-xs text-slate-400 shrink-0">
-              <MessageSquare className="h-3.5 w-3.5" />
-              {topic._count.replies}
-            </div>
-          </div>
+
+            <MessageSquare className="h-4 w-4 text-slate-300 shrink-0 mt-1" />
+          </Link>
         ))}
       </div>
 
