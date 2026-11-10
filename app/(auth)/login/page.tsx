@@ -54,10 +54,10 @@ export default function LoginPage() {
           </Button>
         </form>
         <div className="mt-4 flex items-center justify-between text-sm">
-          <Link href="/forgot-password" className="text-slate-500 hover:text-slate-700">
+          <Link href="/forgot-password" className="text-indigo-600 hover:text-indigo-800 hover:underline">
             Forgot password?
           </Link>
-          <Link href="/register" className="text-slate-500 hover:text-slate-700">
+          <Link href="/register" className="text-indigo-600 hover:text-indigo-800 hover:underline">
             Create account
           </Link>
         </div>

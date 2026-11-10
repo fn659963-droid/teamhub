@@ -138,11 +138,14 @@ export default function MembersPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {members.length === 0 && (
+              <tr><td colSpan={6} className="px-5 py-12 text-center text-sm text-slate-400">No members found.</td></tr>
+            )}
             {members.map((m, i) => {
               const isMe = m.id === myId;
               const color = avatarColors[i % avatarColors.length];
               return (
-                <tr key={m.id} className={`transition-colors ${isMe ? "bg-blue-50/60" : "hover:bg-slate-50"}`}>
+                <tr key={m.id} className={`transition-colors ${isMe ? "bg-indigo-50/40" : "hover:bg-slate-50/60"}`}>
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
                       <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 font-semibold text-xs ${color}`}>
@@ -150,14 +153,14 @@ export default function MembersPage() {
                       </div>
                       <div className="leading-tight">
                         <span className="font-medium text-slate-800">{m.realName}</span>
-                        {isMe && <span className="ml-1.5 text-xs text-blue-500 font-medium">you</span>}
+                        {isMe && <span className="ml-1.5 text-xs text-indigo-500 font-medium">you</span>}
                       </div>
                     </div>
                   </td>
                   <td className="px-5 py-4 text-slate-500">{m.nickname ?? <span className="text-slate-300">—</span>}</td>
                   <td className="px-5 py-4">
                     <button
-                      className="text-blue-600 hover:underline text-sm"
+                      className="text-indigo-600 hover:text-indigo-800 hover:underline text-sm"
                       onClick={() => lookupContact(m.email)}
                     >
                       {m.email}

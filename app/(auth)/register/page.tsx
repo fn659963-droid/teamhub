@@ -91,7 +91,7 @@ export default function RegisterPage() {
           </Button>
         </form>
         <div className="mt-4 text-center text-sm">
-          <Link href="/login" className="text-slate-500 hover:text-slate-700">
+          <Link href="/login" className="text-indigo-600 hover:text-indigo-800 hover:underline">
             Already have an account? Sign in
           </Link>
         </div>

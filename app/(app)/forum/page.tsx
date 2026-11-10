@@ -59,7 +59,13 @@ export default function ForumPage() {
 
       <div className="rounded-xl border border-slate-200 divide-y divide-slate-100 overflow-hidden bg-white shadow-sm">
         {topics.length === 0 && (
-          <div className="p-16 text-center text-sm text-slate-400">No topics yet. Start one!</div>
+          <div className="p-16 text-center">
+            <div className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3">
+              <MessageSquare className="h-5 w-5 text-slate-400" />
+            </div>
+            <p className="text-sm font-medium text-slate-600">No topics yet</p>
+            <p className="text-xs text-slate-400 mt-1">Start the first conversation!</p>
+          </div>
         )}
         {topics.map((topic) => (
           <Link
