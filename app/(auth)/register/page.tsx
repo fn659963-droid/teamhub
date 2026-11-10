@@ -19,6 +19,12 @@ export default function RegisterPage() {
     setError("");
     const form = new FormData(e.currentTarget);
 
+    if (form.get("password") !== form.get("confirmPassword")) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+
     const res = await fetch("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -62,6 +68,10 @@ export default function RegisterPage() {
           <div className="space-y-1">
             <label className="text-sm font-medium text-slate-700">Password</label>
             <Input name="password" type="password" placeholder="Minimum 8 characters" required minLength={8} />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-slate-700">Confirm Password</label>
+            <Input name="confirmPassword" type="password" placeholder="Re-enter password" required minLength={8} />
           </div>
           <div className="space-y-1">
             <label className="text-sm font-medium text-slate-700">Role</label>
