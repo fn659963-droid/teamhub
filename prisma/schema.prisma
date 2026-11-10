@@ -51,8 +51,9 @@ model User {
   notifications   Notification[]
   auditLogs       AuditLog[]
 
-  sharedAccountsOwned       SharedAccount[]  @relation("Owner")
-  sharedAccountsCurrentUser SharedAccount[]  @relation("CurrentUser")
+  sharedAccountsOwned        SharedAccount[]  @relation("Owner")
+  sharedAccountsCurrentUser  SharedAccount[]  @relation("CurrentUser")
+  sharedAccountsPreviousUser SharedAccount[]  @relation("PreviousUser")
   transferRequestsFrom      TransferRequest[] @relation("Requester")
   transferRequestsApprover  TransferRequest[] @relation("Approver")
 
@@ -128,15 +129,17 @@ model SharedAccount {
   platform     String
   accountEmail String   // the ID(email) of the shared account
   anydeskAddr  String?
-  ownerId      String?
-  currentUserId String?
-  startDate    DateTime?
-  extraData    Json?    // stores values for dynamic columns
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  ownerId        String?
+  currentUserId  String?
+  previousUserId String?
+  startDate      DateTime?
+  extraData      Json?    // stores values for dynamic columns
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  owner       User? @relation("Owner",       fields: [ownerId],       references: [id], onDelete: SetNull)
-  currentUser User? @relation("CurrentUser", fields: [currentUserId], references: [id], onDelete: SetNull)
+  owner        User? @relation("Owner",        fields: [ownerId],        references: [id], onDelete: SetNull)
+  currentUser  User? @relation("CurrentUser",  fields: [currentUserId],  references: [id], onDelete: SetNull)
+  previousUser User? @relation("PreviousUser", fields: [previousUserId], references: [id], onDelete: SetNull)
 
   transferRequests TransferRequest[]
   changeHistory    SharedAccountHistory[]

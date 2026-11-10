@@ -3,10 +3,11 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter } from "@/components/ui/dialog";
 import { formatDate } from "@/lib/utils";
-import { Plus, History, ArrowRightLeft, Info } from "lucide-react";
+import { Plus, History, ArrowRightLeft, Info, Pencil } from "lucide-react";
+
+interface UserRef { id: string; realName: string; nickname: string | null; email: string }
 
 interface SharedAccount {
   id: string;
@@ -14,8 +15,9 @@ interface SharedAccount {
   accountEmail: string;
   anydeskAddr: string | null;
   startDate: string | null;
-  owner: { id: string; realName: string; nickname: string | null; email: string } | null;
-  currentUser: { id: string; realName: string; nickname: string | null; email: string } | null;
+  owner: UserRef | null;
+  currentUser: UserRef | null;
+  previousUser: UserRef | null;
 }
 
 interface Contact {
@@ -28,7 +30,7 @@ interface Contact {
   notes: string | null;
 }
 
-function displayName(u: { realName: string; nickname: string | null } | null) {
+function displayName(u: UserRef | null) {
   if (!u) return "—";
   return u.nickname ?? u.realName;
 }
@@ -38,7 +40,11 @@ export default function SharedAccountsPage() {
   const [myId, setMyId] = useState("");
   const [myRole, setMyRole] = useState("");
   const [showCreate, setShowCreate] = useState(false);
-  const [contactCard, setContactCard] = useState<Contact | null>(null);
+  const [contactCard, setContactCard] = useState<Contact | null | "loading">(null);
+  const [contactEmail, setContactEmail] = useState("");
+  const [editingContact, setEditingContact] = useState(false);
+  const [editForm, setEditForm] = useState({ realName: "", nickname: "", phone: "", slack: "", discord: "", notes: "" });
+  const [contactSaving, setContactSaving] = useState(false);
   const [form, setForm] = useState({
     platform: "", accountEmail: "", anydeskAddr: "", startDate: "",
     contactEmail: "", contactName: "", contactNickname: "", contactPhone: "",
@@ -58,9 +64,49 @@ export default function SharedAccountsPage() {
   }, [fetchAccounts]);
 
   async function lookupContact(email: string) {
+    setContactEmail(email);
+    setContactCard("loading");
+    setEditingContact(false);
     const res = await fetch(`/api/contacts?email=${encodeURIComponent(email)}`);
     const data = await res.json();
-    setContactCard(data);
+    setContactCard(data ?? null);
+    if (data) {
+      setEditForm({
+        realName: data.realName ?? "",
+        nickname: data.nickname ?? "",
+        phone: data.phone ?? "",
+        slack: data.handles?.slack ?? "",
+        discord: data.handles?.discord ?? "",
+        notes: data.notes ?? "",
+      });
+    } else {
+      setEditForm({ realName: "", nickname: "", phone: "", slack: "", discord: "", notes: "" });
+    }
+  }
+
+  async function saveContact() {
+    setContactSaving(true);
+    const handles: Record<string, string> = {};
+    if (editForm.slack) handles.slack = editForm.slack;
+    if (editForm.discord) handles.discord = editForm.discord;
+    const res = await fetch("/api/contacts", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: contactEmail,
+        realName: editForm.realName || null,
+        nickname: editForm.nickname || null,
+        phone: editForm.phone || null,
+        handles: Object.keys(handles).length ? handles : null,
+        notes: editForm.notes || null,
+      }),
+    });
+    const data = await res.json();
+    setContactSaving(false);
+    if (res.ok) {
+      setContactCard(data);
+      setEditingContact(false);
+    }
   }
 
   async function createAccount() {
@@ -106,6 +152,9 @@ export default function SharedAccountsPage() {
     fetchAccounts();
   }
 
+  const isAdmin = myRole === "ADMIN";
+  const contactData = contactCard !== "loading" ? contactCard : null;
+
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
@@ -124,6 +173,7 @@ export default function SharedAccountsPage() {
               <th className="text-left px-4 py-3 font-medium text-slate-600">Anydesk Address</th>
               <th className="text-left px-4 py-3 font-medium text-slate-600">Owner</th>
               <th className="text-left px-4 py-3 font-medium text-slate-600">Current User</th>
+              <th className="text-left px-4 py-3 font-medium text-slate-600">Previous User</th>
               <th className="text-left px-4 py-3 font-medium text-slate-600">Start Date</th>
               <th className="w-28"></th>
             </tr>
@@ -131,7 +181,7 @@ export default function SharedAccountsPage() {
           <tbody className="divide-y divide-slate-100">
             {accounts.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-10 text-center text-slate-400 text-sm">
+                <td colSpan={8} className="px-4 py-10 text-center text-slate-400 text-sm">
                   No shared accounts yet. Add one with the button above.
                 </td>
               </tr>
@@ -142,10 +192,7 @@ export default function SharedAccountsPage() {
                 <tr key={acc.id} className="hover:bg-slate-50">
                   <td className="px-4 py-3 font-medium text-slate-800">{acc.platform}</td>
                   <td className="px-4 py-3">
-                    <button
-                      className="text-blue-600 hover:underline text-sm"
-                      onClick={() => lookupContact(acc.accountEmail)}
-                    >
+                    <button className="text-blue-600 hover:underline text-sm" onClick={() => lookupContact(acc.accountEmail)}>
                       {acc.accountEmail}
                     </button>
                   </td>
@@ -161,6 +208,13 @@ export default function SharedAccountsPage() {
                     {acc.currentUser ? (
                       <button className="text-blue-600 hover:underline" onClick={() => lookupContact(acc.currentUser!.email)}>
                         {displayName(acc.currentUser)}
+                      </button>
+                    ) : <span className="text-slate-300">—</span>}
+                  </td>
+                  <td className="px-4 py-3">
+                    {acc.previousUser ? (
+                      <button className="text-blue-600 hover:underline" onClick={() => lookupContact(acc.previousUser!.email)}>
+                        {displayName(acc.previousUser)}
                       </button>
                     ) : <span className="text-slate-300">—</span>}
                   </td>
@@ -256,41 +310,101 @@ export default function SharedAccountsPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Contact card popup */}
-      <Dialog open={!!contactCard} onOpenChange={(o) => !o && setContactCard(null)}>
+      {/* Contact card dialog */}
+      <Dialog open={contactCard !== null} onOpenChange={(o) => { if (!o) { setContactCard(null); setEditingContact(false); } }}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Contact Info</DialogTitle>
+            <div className="flex items-center justify-between">
+              <DialogTitle>Contact Info</DialogTitle>
+              {isAdmin && !editingContact && (
+                <button
+                  onClick={() => setEditingContact(true)}
+                  className="text-slate-400 hover:text-slate-700 p-1"
+                  title="Edit contact"
+                >
+                  <Pencil className="h-4 w-4" />
+                </button>
+              )}
+            </div>
           </DialogHeader>
-          <DialogBody className="space-y-2 text-sm text-slate-700">
-            {contactCard ? (
-              <>
-                <div><span className="font-medium">Email:</span> {contactCard.email}</div>
-                {contactCard.realName && <div><span className="font-medium">Name:</span> {contactCard.realName}</div>}
-                {contactCard.nickname && <div><span className="font-medium">Nickname:</span> {contactCard.nickname}</div>}
-                {contactCard.phone && <div><span className="font-medium">Phone:</span> {contactCard.phone}</div>}
-                {contactCard.handles && Object.keys(contactCard.handles).length > 0 && (
+
+          {contactCard === "loading" ? (
+            <DialogBody><p className="text-sm text-slate-400">Loading…</p></DialogBody>
+          ) : editingContact ? (
+            <>
+              <DialogBody className="space-y-3">
+                <p className="text-xs text-slate-500">Email: <span className="font-medium text-slate-700">{contactEmail}</span></p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">Real Name</label>
+                    <Input value={editForm.realName} onChange={(e) => setEditForm((f) => ({ ...f, realName: e.target.value }))} />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">Nickname</label>
+                    <Input value={editForm.nickname} onChange={(e) => setEditForm((f) => ({ ...f, nickname: e.target.value }))} />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">Phone</label>
+                    <Input value={editForm.phone} onChange={(e) => setEditForm((f) => ({ ...f, phone: e.target.value }))} />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">Slack</label>
+                    <Input value={editForm.slack} onChange={(e) => setEditForm((f) => ({ ...f, slack: e.target.value }))} placeholder="@handle" />
+                  </div>
+                  <div className="space-y-1 col-span-2">
+                    <label className="text-sm font-medium text-slate-700">Discord</label>
+                    <Input value={editForm.discord} onChange={(e) => setEditForm((f) => ({ ...f, discord: e.target.value }))} />
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-slate-700">Notes</label>
+                  <Textarea value={editForm.notes} onChange={(e) => setEditForm((f) => ({ ...f, notes: e.target.value }))} rows={2} />
+                </div>
+              </DialogBody>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setEditingContact(false)}>Cancel</Button>
+                <Button disabled={contactSaving} onClick={saveContact}>{contactSaving ? "Saving…" : "Save"}</Button>
+              </DialogFooter>
+            </>
+          ) : contactData ? (
+            <>
+              <DialogBody className="space-y-2 text-sm text-slate-700">
+                <div><span className="font-medium">Email:</span> {contactData.email}</div>
+                {contactData.realName && <div><span className="font-medium">Name:</span> {contactData.realName}</div>}
+                {contactData.nickname && <div><span className="font-medium">Nickname:</span> {contactData.nickname}</div>}
+                {contactData.phone && <div><span className="font-medium">Phone:</span> {contactData.phone}</div>}
+                {contactData.handles && Object.keys(contactData.handles).length > 0 && (
                   <div>
                     <span className="font-medium">Handles:</span>
                     <div className="mt-1 flex flex-wrap gap-1">
-                      {Object.entries(contactCard.handles).map(([k, v]) => (
+                      {Object.entries(contactData.handles).map(([k, v]) => (
                         <span key={k} className="text-xs bg-slate-100 rounded px-1.5 py-0.5">{k}: {v}</span>
                       ))}
                     </div>
                   </div>
                 )}
-                {contactCard.notes && <div><span className="font-medium">Notes:</span> {contactCard.notes}</div>}
-              </>
-            ) : (
-              <div className="flex items-center gap-2 text-slate-400">
-                <Info className="h-4 w-4" />
-                No contact info registered for this email.
-              </div>
-            )}
-          </DialogBody>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setContactCard(null)}>Close</Button>
-          </DialogFooter>
+                {contactData.notes && <div><span className="font-medium">Notes:</span> {contactData.notes}</div>}
+              </DialogBody>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => { setContactCard(null); setEditingContact(false); }}>Close</Button>
+              </DialogFooter>
+            </>
+          ) : (
+            <>
+              <DialogBody>
+                <div className="flex items-center gap-2 text-slate-400 text-sm">
+                  <Info className="h-4 w-4" />
+                  No contact info registered for this email.
+                </div>
+                {isAdmin && (
+                  <p className="text-xs text-slate-400 mt-2">Click the edit icon above to add contact info.</p>
+                )}
+              </DialogBody>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => { setContactCard(null); setEditingContact(false); }}>Close</Button>
+              </DialogFooter>
+            </>
+          )}
         </DialogContent>
       </Dialog>
     </div>

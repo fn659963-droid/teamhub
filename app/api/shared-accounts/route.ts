@@ -9,6 +9,7 @@ export async function GET() {
       include: {
         owner: { select: { id: true, realName: true, nickname: true, email: true } },
         currentUser: { select: { id: true, realName: true, nickname: true, email: true } },
+        previousUser: { select: { id: true, realName: true, nickname: true, email: true } },
       },
       orderBy: { createdAt: "desc" },
     });

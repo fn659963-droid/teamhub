@@ -112,7 +112,7 @@ export async function PATCH(req: NextRequest) {
         const prevUserId = request.sharedAccount.currentUserId;
         await db.sharedAccount.update({
           where: { id: request.sharedAccountId },
-          data: { currentUserId: request.requesterId },
+          data: { currentUserId: request.requesterId, previousUserId: prevUserId ?? null },
         });
         await db.transferRequest.update({
           where: { id: requestId },
