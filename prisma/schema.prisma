@@ -1,0 +1,281 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum WorkLogStatus {
+  DRAFT
+  SUBMITTED
+  ACKNOWLEDGED
+}
+
+enum TransferStatus {
+  PENDING
+  CURRENT_USER_APPROVED
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  password        String
+  realName        String
+  nickname        String?
+  avatar          String?
+  phone           String?
+  handles         Json?     // { slack, discord, etc }
+  notes           String?
+  role            Role      @default(MEMBER)
+  isActive        Boolean   @default(false) // false until email verified
+  emailVerified   DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  sessions        Session[]
+  workLogs        WorkLog[]
+  workLogComments WorkLogComment[]
+  newsPosts       NewsPost[]
+  newsReactions   NewsReaction[]
+  forumTopics     ForumTopic[]
+  forumReplies    ForumReply[]
+  notifications   Notification[]
+  auditLogs       AuditLog[]
+
+  sharedAccountsOwned       SharedAccount[]  @relation("Owner")
+  sharedAccountsCurrentUser SharedAccount[]  @relation("CurrentUser")
+  transferRequestsFrom      TransferRequest[] @relation("Requester")
+  transferRequestsApprover  TransferRequest[] @relation("Approver")
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  type      String   // "email_verify" | "password_reset"
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("verification_tokens")
+}
+
+model WorkLog {
+  id           String        @id @default(cuid())
+  userId       String
+  date         DateTime      @db.Date
+  morningPlan  String?
+  whatIDid     String?
+  tomorrowPlan String?
+  status       WorkLogStatus @default(DRAFT)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments WorkLogComment[]
+
+  @@unique([userId, date])
+  @@map("work_logs")
+}
+
+model WorkLogComment {
+  id         String   @id @default(cuid())
+  workLogId  String
+  authorId   String
+  content    String
+  createdAt  DateTime @default(now())
+
+  workLog WorkLog @relation(fields: [workLogId], references: [id], onDelete: Cascade)
+  author  User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@map("work_log_comments")
+}
+
+// Shared Accounts — columns are partly dynamic
+model SharedAccountColumn {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  order     Int
+  isDefault Boolean  @default(false) // default columns can't be deleted
+  createdAt DateTime @default(now())
+
+  @@map("shared_account_columns")
+}
+
+model SharedAccount {
+  id           String   @id @default(cuid())
+  platform     String
+  accountEmail String   // the ID(email) of the shared account
+  anydeskAddr  String?
+  ownerId      String?
+  currentUserId String?
+  startDate    DateTime?
+  extraData    Json?    // stores values for dynamic columns
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  owner       User? @relation("Owner",       fields: [ownerId],       references: [id], onDelete: SetNull)
+  currentUser User? @relation("CurrentUser", fields: [currentUserId], references: [id], onDelete: SetNull)
+
+  transferRequests TransferRequest[]
+  changeHistory    SharedAccountHistory[]
+
+  @@map("shared_accounts")
+}
+
+model TransferRequest {
+  id              String         @id @default(cuid())
+  sharedAccountId String
+  requesterId     String
+  approverId      String?        // Admin who approves second
+  status          TransferStatus @default(PENDING)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  sharedAccount SharedAccount @relation(fields: [sharedAccountId], references: [id], onDelete: Cascade)
+  requester     User          @relation("Requester", fields: [requesterId], references: [id], onDelete: Cascade)
+  approver      User?         @relation("Approver",  fields: [approverId],  references: [id], onDelete: SetNull)
+
+  @@map("transfer_requests")
+}
+
+model SharedAccountHistory {
+  id              String   @id @default(cuid())
+  sharedAccountId String
+  changedBy       String
+  field           String
+  oldValue        String?
+  newValue        String?
+  changedAt       DateTime @default(now())
+
+  sharedAccount SharedAccount @relation(fields: [sharedAccountId], references: [id], onDelete: Cascade)
+
+  @@map("shared_account_history")
+}
+
+// Contact directory — people identified by email
+model Contact {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  realName  String?
+  nickname  String?
+  phone     String?
+  handles   Json?    // { slack, discord, etc }
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("contacts")
+}
+
+model NewsPost {
+  id          String   @id @default(cuid())
+  authorId    String
+  title       String
+  content     String
+  attachment  String?
+  isPinned    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  author    User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  reactions NewsReaction[]
+
+  @@map("news_posts")
+}
+
+model NewsReaction {
+  id       String @id @default(cuid())
+  postId   String
+  userId   String
+  type     String // "thumbsup" | "bookmark"
+
+  post NewsPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId, type])
+  @@map("news_reactions")
+}
+
+model ForumTopic {
+  id        String   @id @default(cuid())
+  authorId  String
+  title     String
+  content   String
+  tags      String[] @default([])
+  isPinned  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author  User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  replies ForumReply[]
+
+  @@map("forum_topics")
+}
+
+model ForumReply {
+  id        String   @id @default(cuid())
+  topicId   String
+  authorId  String
+  parentId  String?  // null = top-level reply; set = nested reply (max 2 levels)
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  topic  ForumTopic   @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  author User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent ForumReply?  @relation("ReplyThread", fields: [parentId], references: [id], onDelete: SetNull)
+  children ForumReply[] @relation("ReplyThread")
+
+  @@map("forum_replies")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // "transfer_request" | "work_log_comment" | "broadcast"
+  title     String
+  message   String
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  detail    Json?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("audit_logs")
+}
